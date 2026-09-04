@@ -1,31 +1,13 @@
 import React, { useState } from 'react';
 import {
   Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  Tooltip as ChartTooltip,
-  Legend,
-  Filler,
+  registerables,
 } from 'chart.js';
 import { Chart, Line } from 'react-chartjs-2';
 import { AnnualData, SimulationParams } from '../types/simulation';
 import { BarChart3, LineChart } from 'lucide-react';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-  ChartTooltip,
-  Legend,
-  Filler
-);
+ChartJS.register(...registerables);
 
 interface SimulationChartsProps {
   params: SimulationParams;
