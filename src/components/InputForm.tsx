@@ -23,7 +23,7 @@ export const InputForm: React.FC<InputFormProps> = ({ params, onChange }) => {
   const loanTotal = Math.max(0, params.price - downPayment);
 
   return (
-    <aside className="panel" style={{ position: 'sticky', top: '1rem' }}>
+    <aside className="panel input-panel">
       <div className="panel-title">
         <SlidersHorizontal size={18} color="var(--brand-primary)" />
         シミュレーション入力パラメータ

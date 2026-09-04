@@ -287,6 +287,32 @@ button, input, select, textarea {
   gap: 1.25rem;
 }
 
+/* Input Form Sidebar Panel */
+.input-panel {
+  background: #1e293b;
+  border: 1px solid var(--border-subtle);
+  z-index: 5;
+}
+
+@media (min-width: 1101px) {
+  .input-panel {
+    position: sticky;
+    top: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  }
+}
+
+@media (max-width: 1100px) {
+  .input-panel {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
 .panel-title {
   font-size: 1.05rem;
   font-weight: 600;
@@ -631,7 +657,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   font-weight: 600;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 2;
 }
 
 .data-table th:first-child, .data-table td:first-child {
@@ -639,12 +665,12 @@ input[type="range"]::-webkit-slider-thumb:hover {
   position: sticky;
   left: 0;
   background: #111827;
-  z-index: 11;
+  z-index: 3;
   font-weight: 600;
 }
 
 .data-table th:first-child {
-  z-index: 20;
+  z-index: 4;
 }
 
 .data-table tbody tr:hover td {
