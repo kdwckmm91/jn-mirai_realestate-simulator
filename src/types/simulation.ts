@@ -89,7 +89,7 @@ export interface SimulationResult {
 }
 
 export interface ComparisonPattern {
-  id: 'A' | 'B' | 'C';
+  id: string;
   name: string;
   params: SimulationParams;
   color: string;
