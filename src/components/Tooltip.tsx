@@ -1,12 +1,24 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Info } from 'lucide-react';
 
-interface TooltipProps {
-  content: string;
+export interface TooltipProps {
+  content?: string | React.ReactNode;
+  title?: string;
+  formula?: string;
+  icon?: 'help' | 'info';
+  iconSize?: number;
+  className?: string;
 }
 
-export const Tooltip: React.FC<TooltipProps> = ({ content }) => {
+export const Tooltip: React.FC<TooltipProps> = ({
+  content,
+  title,
+  formula,
+  icon = 'help',
+  iconSize = 14,
+  className = '',
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [coords, setCoords] = useState<{ top: number; left: number; placement: 'top' | 'bottom' }>({
     top: 0,
@@ -15,10 +27,12 @@ export const Tooltip: React.FC<TooltipProps> = ({ content }) => {
   });
   const triggerRef = useRef<HTMLSpanElement>(null);
 
+  const isRich = Boolean(title || formula);
+  const popupWidth = isRich ? 320 : 280;
+
   const updatePosition = useCallback(() => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      const popupWidth = 280;
       const margin = 12;
 
       // Center horizontally relative to trigger icon
@@ -31,12 +45,13 @@ export const Tooltip: React.FC<TooltipProps> = ({ content }) => {
 
       // Check vertical space (flip to top if close to bottom)
       const spaceBelow = window.innerHeight - rect.bottom;
-      const placement = spaceBelow < 120 && rect.top > 120 ? 'top' : 'bottom';
+      const estimatedHeight = isRich ? 150 : 80;
+      const placement = spaceBelow < estimatedHeight + 10 && rect.top > estimatedHeight ? 'top' : 'bottom';
       const top = placement === 'bottom' ? rect.bottom + 6 : rect.top - 6;
 
       setCoords({ top, left, placement });
     }
-  }, []);
+  }, [popupWidth, isRich]);
 
   const handleMouseEnter = () => {
     updatePosition();
@@ -81,28 +96,36 @@ export const Tooltip: React.FC<TooltipProps> = ({ content }) => {
     <>
       <span
         ref={triggerRef}
-        className="tooltip-trigger"
+        className={`tooltip-trigger ${className}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}
-        aria-label="ヘルプ"
+        aria-label={title || 'ヘルプ'}
       >
-        <HelpCircle size={14} />
+        {icon === 'info' ? <Info size={iconSize} /> : <HelpCircle size={iconSize} />}
       </span>
       {isOpen &&
         typeof document !== 'undefined' &&
         createPortal(
           <div
-            className={`tooltip-popup tooltip-placement-${coords.placement}`}
+            className={`tooltip-popup tooltip-placement-${coords.placement} ${isRich ? 'tooltip-popup-rich' : ''}`}
             style={{
               position: 'fixed',
               top: `${coords.top}px`,
               left: `${coords.left}px`,
               transform: coords.placement === 'top' ? 'translateY(-100%)' : 'none',
               zIndex: 9999,
+              maxWidth: `${popupWidth}px`,
             }}
           >
-            {content}
+            {title && <div className="tooltip-title">{title}</div>}
+            {content && <div className="tooltip-desc">{content}</div>}
+            {formula && (
+              <div className="tooltip-formula-box">
+                <div className="tooltip-formula-header">計算式</div>
+                <code className="tooltip-formula-code">{formula}</code>
+              </div>
+            )}
           </div>,
           document.body
         )}

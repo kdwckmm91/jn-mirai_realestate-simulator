@@ -1,10 +1,31 @@
 import React, { useState } from 'react';
 import { AnnualData } from '../types/simulation';
 import { Table, ChevronDown, ChevronUp } from 'lucide-react';
+import { Tooltip } from './Tooltip';
+import { TABLE_COLUMN_HELP } from '../constants/tableColumnHelp';
 
 interface AnnualDataTableProps {
   annualList: AnnualData[];
 }
+
+const TABLE_COLUMNS = [
+  { key: 'year', label: '年次' },
+  { key: 'beginningBalance', label: '期首ローン残高' },
+  { key: 'effectiveRent', label: '実効家賃収入' },
+  { key: 'managementCost', label: '運営管理費' },
+  { key: 'otherCost', label: 'その他経費' },
+  { key: 'depreciation', label: '減価償却費' },
+  { key: 'interestPayment', label: '支払利息' },
+  { key: 'preTaxProfit', label: '税引前利益' },
+  { key: 'corporateTax', label: '法人税等' },
+  { key: 'postTaxProfit', label: '税引後利益' },
+  { key: 'principalRepayment', label: '元本返済額' },
+  { key: 'totalRepayment', label: '年間総返済額' },
+  { key: 'fcf', label: 'フリーCF (FCF)' },
+  { key: 'cumulativeFcf', label: '累計CF' },
+  { key: 'endingBalance', label: '期末ローン残高' },
+  { key: 'status', label: '状態' },
+] as const;
 
 export const AnnualDataTable: React.FC<AnnualDataTableProps> = ({ annualList }) => {
   const [showAllYears, setShowAllYears] = useState(false);
@@ -45,22 +66,25 @@ export const AnnualDataTable: React.FC<AnnualDataTableProps> = ({ annualList }) 
         <table className="data-table">
           <thead>
             <tr>
-              <th>年次</th>
-              <th>期首ローン残高</th>
-              <th>実効家賃収入</th>
-              <th>運営管理費</th>
-              <th>その他経費</th>
-              <th>減価償却費</th>
-              <th>支払利息</th>
-              <th>税引前利益</th>
-              <th>法人税等</th>
-              <th>税引後利益</th>
-              <th>元本返済額</th>
-              <th>年間総返済額</th>
-              <th>フリーCF (FCF)</th>
-              <th>累計CF</th>
-              <th>期末ローン残高</th>
-              <th>状態</th>
+              {TABLE_COLUMNS.map((col) => {
+                const help = TABLE_COLUMN_HELP[col.key];
+                return (
+                  <th key={col.key}>
+                    <div className="table-th-content">
+                      <span>{col.label}</span>
+                      {help && (
+                        <Tooltip
+                          title={help.label}
+                          content={help.description}
+                          formula={help.formula}
+                          icon="info"
+                          iconSize={13}
+                        />
+                      )}
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
